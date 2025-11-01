@@ -1,0 +1,130 @@
+kalo-morphe-operation-type: crud
+kalo-morphe-resource: people
+kalo-morphe-resource-type: model
+paths:
+    /api/people:
+        get:
+            tags:
+                - Person
+            summary: List people
+            description: Retrieve a paginated list of people
+            operationId: list_Person
+            parameters:
+                - $ref: '#/components/parameters/page'
+                - $ref: '#/components/parameters/pageSize'
+            responses:
+                "200":
+                    description: List of people
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PersonList'
+                "400":
+                    $ref: '#/components/responses/Error'
+                "500":
+                    $ref: '#/components/responses/Error'
+        post:
+            tags:
+                - Person
+            summary: Create person
+            description: Create a new person
+            operationId: create_Person
+            requestBody:
+                description: Person to create
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/PersonCreate'
+                required: true
+            responses:
+                "201":
+                    description: Created person
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Person'
+                "400":
+                    $ref: '#/components/responses/Error'
+                "500":
+                    $ref: '#/components/responses/Error'
+    /api/people/{id}:
+        get:
+            tags:
+                - Person
+            summary: Get person
+            description: Retrieve a single person by ID
+            operationId: get_Person
+            parameters:
+                - name: id
+                  in: path
+                  description: Person ID
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: Person details
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Person'
+                "404":
+                    $ref: '#/components/responses/Error'
+                "500":
+                    $ref: '#/components/responses/Error'
+        patch:
+            tags:
+                - Person
+            summary: Update person
+            description: Update an existing person
+            operationId: update_Person
+            parameters:
+                - name: id
+                  in: path
+                  description: Person ID
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            requestBody:
+                description: Person updates
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/PersonUpdate'
+                required: true
+            responses:
+                "200":
+                    description: Updated person
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Person'
+                "400":
+                    $ref: '#/components/responses/Error'
+                "404":
+                    $ref: '#/components/responses/Error'
+                "500":
+                    $ref: '#/components/responses/Error'
+        delete:
+            tags:
+                - Person
+            summary: Delete person
+            description: Delete a person
+            operationId: delete_Person
+            parameters:
+                - name: id
+                  in: path
+                  description: Person ID
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "204":
+                    description: Successfully deleted
+                "404":
+                    $ref: '#/components/responses/Error'
+                "500":
+                    $ref: '#/components/responses/Error'

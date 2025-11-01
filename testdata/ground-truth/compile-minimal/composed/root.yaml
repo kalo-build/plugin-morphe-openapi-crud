@@ -1,0 +1,60 @@
+openapi: 3.1.0
+info:
+    title: Generated API
+    description: API generated from Morphe schema
+    version: 1.0.0
+servers:
+    - url: http://localhost:8080
+      description: Development server
+paths:
+    /api/companies:
+        $ref: ./generated/paths/companies.paths.yaml
+    /api/contact-infos:
+        $ref: ./generated/paths/contact-infos.paths.yaml
+    /api/people:
+        $ref: ./generated/paths/people.paths.yaml
+components:
+    schemas:
+        Company:
+            $ref: ./generated/entities/Company.entity.yaml#/schema
+        CompanyCreate:
+            $ref: ./generated/dtos/Company.create.yaml#/schema
+        CompanyList:
+            $ref: ./generated/dtos/Company.list.yaml#/schema
+        CompanyUpdate:
+            $ref: ./generated/dtos/Company.update.yaml#/schema
+        ContactInfo:
+            $ref: ./generated/entities/ContactInfo.entity.yaml#/schema
+        ContactInfoCreate:
+            $ref: ./generated/dtos/Contact-Info.create.yaml#/schema
+        ContactInfoList:
+            $ref: ./generated/dtos/Contact-Info.list.yaml#/schema
+        ContactInfoUpdate:
+            $ref: ./generated/dtos/Contact-Info.update.yaml#/schema
+        Nationality:
+            $ref: ./generated/enums/Nationality.enum.yaml#/schema
+        Person:
+            $ref: ./generated/entities/Person.entity.yaml#/schema
+        PersonCreate:
+            $ref: ./generated/dtos/Person.create.yaml#/schema
+        PersonList:
+            $ref: ./generated/dtos/Person.list.yaml#/schema
+        PersonUpdate:
+            $ref: ./generated/dtos/Person.update.yaml#/schema
+    responses:
+        Error:
+            $ref: ./generated/responses/error.response.yaml#/responses/Error
+    parameters:
+        page:
+            $ref: ./generated/parameters/pagination.parameters.yaml#/parameters/page
+        pageSize:
+            $ref: ./generated/parameters/pagination.parameters.yaml#/parameters/pageSize
+tags:
+    - name: Company
+      description: Operations on Company
+    - name: ContactInfo
+      description: Operations on ContactInfo
+    - name: Person
+      description: Operations on Person
+kalo-morphe-composed: true
+kalo-morphe-version: 1.0.0

@@ -1,0 +1,19 @@
+kalo-morphe-id-strategy: autoincrement
+kalo-morphe-name: ContactInfo
+kalo-morphe-origin: model
+kalo-morphe-resource-type: model
+schema:
+    type: object
+    properties:
+        email:
+            type: string
+        id:
+            type: integer
+            readOnly: true
+        personID:
+            type: string
+            description: Foreign key to Person
+            nullable: true
+    required:
+        - email
+    description: ContactInfo model

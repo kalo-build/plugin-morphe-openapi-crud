@@ -1,0 +1,18 @@
+kalo-morphe-name: Personupdate
+kalo-morphe-origin: dto
+schema:
+    type: object
+    properties:
+        companyID:
+            type: string
+            description: Foreign key to Company
+            nullable: true
+        firstName:
+            type: string
+            nullable: true
+        lastName:
+            type: string
+            nullable: true
+        nationality:
+            $ref: '#/components/schemas/Nationality'
+    description: Update Person request

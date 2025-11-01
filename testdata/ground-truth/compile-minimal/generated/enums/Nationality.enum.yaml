@@ -1,0 +1,9 @@
+kalo-morphe-name: Nationality
+kalo-morphe-origin: enum
+schema:
+    type: string
+    enum:
+        - German
+        - French
+        - American
+    description: Nationality enumeration

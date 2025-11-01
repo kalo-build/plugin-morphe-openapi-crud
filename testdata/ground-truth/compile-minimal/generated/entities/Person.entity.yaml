@@ -1,0 +1,25 @@
+kalo-morphe-id-strategy: autoincrement
+kalo-morphe-name: Person
+kalo-morphe-origin: model
+kalo-morphe-resource-type: model
+schema:
+    type: object
+    properties:
+        companyID:
+            type: string
+            description: Foreign key to Company
+            nullable: true
+        firstName:
+            type: string
+        id:
+            type: integer
+            readOnly: true
+        lastName:
+            type: string
+        nationality:
+            $ref: '#/components/schemas/Nationality'
+    required:
+        - firstName
+        - lastName
+        - nationality
+    description: Person model

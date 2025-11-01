@@ -1,0 +1,130 @@
+kalo-morphe-operation-type: crud
+kalo-morphe-resource: companies
+kalo-morphe-resource-type: model
+paths:
+    /api/companies:
+        get:
+            tags:
+                - Company
+            summary: List companies
+            description: Retrieve a paginated list of companies
+            operationId: list_Company
+            parameters:
+                - $ref: '#/components/parameters/page'
+                - $ref: '#/components/parameters/pageSize'
+            responses:
+                "200":
+                    description: List of companies
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CompanyList'
+                "400":
+                    $ref: '#/components/responses/Error'
+                "500":
+                    $ref: '#/components/responses/Error'
+        post:
+            tags:
+                - Company
+            summary: Create company
+            description: Create a new company
+            operationId: create_Company
+            requestBody:
+                description: Company to create
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CompanyCreate'
+                required: true
+            responses:
+                "201":
+                    description: Created company
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Company'
+                "400":
+                    $ref: '#/components/responses/Error'
+                "500":
+                    $ref: '#/components/responses/Error'
+    /api/companies/{id}:
+        get:
+            tags:
+                - Company
+            summary: Get company
+            description: Retrieve a single company by ID
+            operationId: get_Company
+            parameters:
+                - name: id
+                  in: path
+                  description: Company ID
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: Company details
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Company'
+                "404":
+                    $ref: '#/components/responses/Error'
+                "500":
+                    $ref: '#/components/responses/Error'
+        patch:
+            tags:
+                - Company
+            summary: Update company
+            description: Update an existing company
+            operationId: update_Company
+            parameters:
+                - name: id
+                  in: path
+                  description: Company ID
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            requestBody:
+                description: Company updates
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CompanyUpdate'
+                required: true
+            responses:
+                "200":
+                    description: Updated company
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Company'
+                "400":
+                    $ref: '#/components/responses/Error'
+                "404":
+                    $ref: '#/components/responses/Error'
+                "500":
+                    $ref: '#/components/responses/Error'
+        delete:
+            tags:
+                - Company
+            summary: Delete company
+            description: Delete a company
+            operationId: delete_Company
+            parameters:
+                - name: id
+                  in: path
+                  description: Company ID
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "204":
+                    description: Successfully deleted
+                "404":
+                    $ref: '#/components/responses/Error'
+                "500":
+                    $ref: '#/components/responses/Error'

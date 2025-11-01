@@ -1,0 +1,14 @@
+kalo-morphe-name: ContactInfocreate
+kalo-morphe-origin: dto
+schema:
+    type: object
+    properties:
+        email:
+            type: string
+        personID:
+            type: string
+            description: Foreign key to Person
+            nullable: true
+    required:
+        - email
+    description: Create ContactInfo request

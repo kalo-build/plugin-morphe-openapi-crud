@@ -1,0 +1,20 @@
+kalo-morphe-name: Personcreate
+kalo-morphe-origin: dto
+schema:
+    type: object
+    properties:
+        companyID:
+            type: string
+            description: Foreign key to Company
+            nullable: true
+        firstName:
+            type: string
+        lastName:
+            type: string
+        nationality:
+            $ref: '#/components/schemas/Nationality'
+    required:
+        - firstName
+        - lastName
+        - nationality
+    description: Create Person request

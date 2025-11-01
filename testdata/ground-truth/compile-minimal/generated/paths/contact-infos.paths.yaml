@@ -1,0 +1,130 @@
+kalo-morphe-operation-type: crud
+kalo-morphe-resource: contact-infos
+kalo-morphe-resource-type: model
+paths:
+    /api/contact-infos:
+        get:
+            tags:
+                - ContactInfo
+            summary: List contact-infos
+            description: Retrieve a paginated list of contact-infos
+            operationId: list_ContactInfo
+            parameters:
+                - $ref: '#/components/parameters/page'
+                - $ref: '#/components/parameters/pageSize'
+            responses:
+                "200":
+                    description: List of contact-infos
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ContactInfoList'
+                "400":
+                    $ref: '#/components/responses/Error'
+                "500":
+                    $ref: '#/components/responses/Error'
+        post:
+            tags:
+                - ContactInfo
+            summary: Create contact-info
+            description: Create a new contact-info
+            operationId: create_ContactInfo
+            requestBody:
+                description: ContactInfo to create
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ContactInfoCreate'
+                required: true
+            responses:
+                "201":
+                    description: Created contact-info
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ContactInfo'
+                "400":
+                    $ref: '#/components/responses/Error'
+                "500":
+                    $ref: '#/components/responses/Error'
+    /api/contact-infos/{id}:
+        get:
+            tags:
+                - ContactInfo
+            summary: Get contact-info
+            description: Retrieve a single contact-info by ID
+            operationId: get_ContactInfo
+            parameters:
+                - name: id
+                  in: path
+                  description: ContactInfo ID
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "200":
+                    description: ContactInfo details
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ContactInfo'
+                "404":
+                    $ref: '#/components/responses/Error'
+                "500":
+                    $ref: '#/components/responses/Error'
+        patch:
+            tags:
+                - ContactInfo
+            summary: Update contact-info
+            description: Update an existing contact-info
+            operationId: update_ContactInfo
+            parameters:
+                - name: id
+                  in: path
+                  description: ContactInfo ID
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            requestBody:
+                description: ContactInfo updates
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ContactInfoUpdate'
+                required: true
+            responses:
+                "200":
+                    description: Updated contact-info
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ContactInfo'
+                "400":
+                    $ref: '#/components/responses/Error'
+                "404":
+                    $ref: '#/components/responses/Error'
+                "500":
+                    $ref: '#/components/responses/Error'
+        delete:
+            tags:
+                - ContactInfo
+            summary: Delete contact-info
+            description: Delete a contact-info
+            operationId: delete_ContactInfo
+            parameters:
+                - name: id
+                  in: path
+                  description: ContactInfo ID
+                  required: true
+                  schema:
+                    type: integer
+                    format: int64
+            responses:
+                "204":
+                    description: Successfully deleted
+                "404":
+                    $ref: '#/components/responses/Error'
+                "500":
+                    $ref: '#/components/responses/Error'

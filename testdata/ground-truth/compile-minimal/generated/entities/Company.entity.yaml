@@ -1,0 +1,18 @@
+kalo-morphe-id-strategy: autoincrement
+kalo-morphe-name: Company
+kalo-morphe-origin: model
+kalo-morphe-resource-type: model
+schema:
+    type: object
+    properties:
+        id:
+            type: integer
+            readOnly: true
+        name:
+            type: string
+        taxID:
+            type: string
+    required:
+        - name
+        - taxID
+    description: Company model

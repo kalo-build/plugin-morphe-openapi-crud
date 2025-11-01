@@ -1,0 +1,13 @@
+kalo-morphe-name: ContactInfoupdate
+kalo-morphe-origin: dto
+schema:
+    type: object
+    properties:
+        email:
+            type: string
+            nullable: true
+        personID:
+            type: string
+            description: Foreign key to Person
+            nullable: true
+    description: Update ContactInfo request

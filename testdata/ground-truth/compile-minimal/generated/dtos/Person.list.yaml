@@ -1,0 +1,32 @@
+kalo-morphe-name: Personlist
+kalo-morphe-origin: dto
+schema:
+    type: object
+    properties:
+        data:
+            type: array
+            items:
+                $ref: '#/components/schemas/Person'
+        meta:
+            type: object
+            properties:
+                page:
+                    type: integer
+                    description: Current page number
+                pageSize:
+                    type: integer
+                    description: Items per page
+                total:
+                    type: integer
+                    description: Total number of items
+                totalPages:
+                    type: integer
+                    description: Total number of pages
+            required:
+                - page
+                - pageSize
+                - total
+                - totalPages
+    required:
+        - data
+        - meta

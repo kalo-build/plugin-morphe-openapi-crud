@@ -1,0 +1,13 @@
+kalo-morphe-name: Companycreate
+kalo-morphe-origin: dto
+schema:
+    type: object
+    properties:
+        name:
+            type: string
+        taxID:
+            type: string
+    required:
+        - name
+        - taxID
+    description: Create Company request

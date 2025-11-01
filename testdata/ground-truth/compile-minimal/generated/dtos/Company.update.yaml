@@ -1,0 +1,12 @@
+kalo-morphe-name: Companyupdate
+kalo-morphe-origin: dto
+schema:
+    type: object
+    properties:
+        name:
+            type: string
+            nullable: true
+        taxID:
+            type: string
+            nullable: true
+    description: Update Company request
