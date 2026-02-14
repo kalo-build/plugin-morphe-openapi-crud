@@ -84,6 +84,8 @@ func createModelReadSchema(reg *registry.Registry, model yaml.Model, config cfg.
 		field := model.Fields[fieldName]
 		fieldKey := formatdef.ToCamelCase(fieldName)
 
+		isOptional := hasAttribute(field.Attributes, "optional")
+
 		// Check if it's an enum reference
 		if !yaml.IsModelFieldTypePrimitive(field.Type) {
 			enumName := string(field.Type)
@@ -91,7 +93,9 @@ func createModelReadSchema(reg *registry.Registry, model yaml.Model, config cfg.
 			if enumErr == nil {
 				// Reference to enum schema
 				schema.Properties[fieldKey] = formatdef.SchemaRef(enum.Name)
-				schema.Required = append(schema.Required, fieldKey)
+				if !isOptional {
+					schema.Required = append(schema.Required, fieldKey)
+				}
 				continue
 			}
 			return nil, fmt.Errorf("unsupported non-primitive type: %s", field.Type)
@@ -103,22 +107,17 @@ func createModelReadSchema(reg *registry.Registry, model yaml.Model, config cfg.
 			return nil, fmt.Errorf("field '%s': %w", fieldName, err)
 		}
 
-		// Check if field has immutable attribute
-		hasImmutable := false
-		for _, attr := range field.Attributes {
-			if attr == "immutable" {
-				hasImmutable = true
-				break
-			}
-		}
-
 		// Don't mark as required if it's optional or auto-generated
-		if field.Type != yaml.ModelFieldTypeAutoIncrement {
+		if field.Type != yaml.ModelFieldTypeAutoIncrement && !isOptional {
 			schema.Required = append(schema.Required, fieldKey)
 		}
 
-		if hasImmutable {
+		if hasAttribute(field.Attributes, "immutable") {
 			fieldSchema.ReadOnly = true
+		}
+
+		if isOptional {
+			fieldSchema.Nullable = true
 		}
 
 		schema.Properties[fieldKey] = fieldSchema
@@ -165,14 +164,8 @@ func createModelCreateSchema(reg *registry.Registry, model yaml.Model, config cf
 			continue
 		}
 
-		// Check if field has immutable attribute (UUID can be provided on create)
-		isImmutable := false
-		for _, attr := range field.Attributes {
-			if attr == "immutable" {
-				isImmutable = true
-				break
-			}
-		}
+		isImmutable := hasAttribute(field.Attributes, "immutable")
+		isOptional := hasAttribute(field.Attributes, "optional")
 
 		// Check if it's an enum reference
 		if !yaml.IsModelFieldTypePrimitive(field.Type) {
@@ -180,7 +173,7 @@ func createModelCreateSchema(reg *registry.Registry, model yaml.Model, config cf
 			enum, enumErr := reg.GetEnum(enumName)
 			if enumErr == nil {
 				schema.Properties[fieldKey] = formatdef.SchemaRef(enum.Name)
-				if !isImmutable {
+				if !isImmutable && !isOptional {
 					schema.Required = append(schema.Required, fieldKey)
 				}
 				continue
@@ -197,10 +190,14 @@ func createModelCreateSchema(reg *registry.Registry, model yaml.Model, config cf
 		fieldSchema.ReadOnly = false
 		fieldSchema.WriteOnly = false
 
+		if isOptional {
+			fieldSchema.Nullable = true
+		}
+
 		schema.Properties[fieldKey] = fieldSchema
 
-		// Add to required unless it's optional or has a default
-		if !isImmutable {
+		// Add to required unless it's immutable or optional
+		if !isImmutable && !isOptional {
 			schema.Required = append(schema.Required, fieldKey)
 		}
 	}
@@ -292,16 +289,7 @@ func createModelUpdateSchema(reg *registry.Registry, model yaml.Model, config cf
 			continue
 		}
 
-		// Check if field has immutable attribute
-		isImmutable := false
-		for _, attr := range field.Attributes {
-			if attr == "immutable" {
-				isImmutable = true
-				break
-			}
-		}
-
-		if isImmutable {
+		if hasAttribute(field.Attributes, "immutable") {
 			continue
 		}
 
@@ -396,6 +384,16 @@ func createModelListSchema(modelName string, config cfg.OpenAPIConfig) *formatde
 		},
 		Required: []string{"data", "meta"},
 	}
+}
+
+// hasAttribute checks if the given attribute name is present in a slice of attributes
+func hasAttribute(attrs []string, name string) bool {
+	for _, attr := range attrs {
+		if attr == name {
+			return true
+		}
+	}
+	return false
 }
 
 func addRelationshipFields(schema *formatdef.Schema, relName string, rel yaml.ModelRelation, config cfg.OpenAPIConfig) {

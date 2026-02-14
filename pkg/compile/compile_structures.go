@@ -38,12 +38,16 @@ func MorpheStructureToSchema(reg *registry.Registry, structure yaml.Structure) (
 	for _, fieldName := range fieldNames {
 		field := structure.Fields[fieldName]
 
+		isOptional := hasAttribute(field.Attributes, "optional")
+
 		// Check if it's a reference to another structure
 		if !yaml.IsStructureFieldTypePrimitive(field.Type) {
 			// It's a reference to another structure
 			structName := string(field.Type)
 			schema.Properties[fieldName] = formatdef.SchemaRef(structName)
-			schema.Required = append(schema.Required, fieldName)
+			if !isOptional {
+				schema.Required = append(schema.Required, fieldName)
+			}
 			continue
 		}
 
@@ -53,8 +57,14 @@ func MorpheStructureToSchema(reg *registry.Registry, structure yaml.Structure) (
 			return nil, fmt.Errorf("structure '%s' field '%s': %w", structure.Name, fieldName, err)
 		}
 
+		if isOptional {
+			fieldSchema.Nullable = true
+		}
+
 		schema.Properties[fieldName] = fieldSchema
-		schema.Required = append(schema.Required, fieldName)
+		if !isOptional {
+			schema.Required = append(schema.Required, fieldName)
+		}
 	}
 
 	return schema, nil
