@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	yamlv3 "gopkg.in/yaml.v3"
 
@@ -33,7 +34,7 @@ func (sw *SegmentedWriter) WriteEntitySchema(entityName string, schema formatdef
 
 // WriteDTOSchema writes a DTO schema fragment (Create/Update/List)
 func (sw *SegmentedWriter) WriteDTOSchema(resourceName string, dtoType string, schema formatdef.Schema, annotations KaloMorpheAnnotations) error {
-	fileName := fmt.Sprintf("%s.%s", formatdef.ToKebabCase(resourceName), dtoType)
+	fileName := fmt.Sprintf("%s.%s", strings.ToLower(formatdef.ToKebabCase(resourceName)), dtoType)
 	return sw.writeSchemaFragment("dtos", fileName, schema, annotations)
 }
 
@@ -58,7 +59,7 @@ func (sw *SegmentedWriter) WritePathsFragment(resourceName string, paths map[str
 		fragment[key] = value
 	}
 
-	fileName := formatdef.ToKebabCase(resourceName) + ".paths"
+	fileName := strings.ToLower(formatdef.ToKebabCase(resourceName)) + ".paths"
 	return sw.writeFragment("paths", fileName, fragment)
 }
 
