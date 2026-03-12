@@ -122,6 +122,7 @@ func createEntityReadSchema(reg *registry.Registry, entity yaml.Entity, model ya
 }
 
 func addEntityRelationshipFields(schema *formatdef.Schema, relName string, rel yaml.EntityRelation, config cfg.OpenAPIConfig) {
+	isOptional := hasAttribute(rel.Attributes, "optional")
 	switch rel.Type {
 	case "ForOne":
 		// Add ID field
@@ -129,7 +130,7 @@ func addEntityRelationshipFields(schema *formatdef.Schema, relName string, rel y
 		schema.Properties[idFieldName] = &formatdef.Schema{
 			Type:        "string",
 			Description: fmt.Sprintf("Foreign key to %s", relName),
-			Nullable:    true,
+			Nullable:    isOptional,
 		}
 		// Optionally add expanded object
 		if config.Relations.Expand {
@@ -141,7 +142,7 @@ func addEntityRelationshipFields(schema *formatdef.Schema, relName string, rel y
 			schema.Properties[objectFieldName] = &formatdef.Schema{
 				Ref:         "#/components/schemas/" + targetModel,
 				Description: fmt.Sprintf("Related %s object", targetModel),
-				Nullable:    true,
+				Nullable:    isOptional,
 			}
 		}
 
@@ -154,7 +155,7 @@ func addEntityRelationshipFields(schema *formatdef.Schema, relName string, rel y
 			Items: &formatdef.Schema{
 				Type: "string",
 			},
-			Nullable: true,
+			Nullable: isOptional,
 		}
 		// Optionally add expanded objects
 		if config.Relations.Expand {
@@ -167,7 +168,7 @@ func addEntityRelationshipFields(schema *formatdef.Schema, relName string, rel y
 				Type:        "array",
 				Description: fmt.Sprintf("Related %s objects", targetModel),
 				Items:       formatdef.SchemaRef(targetModel),
-				Nullable:    true,
+				Nullable:    isOptional,
 			}
 		}
 
@@ -178,12 +179,12 @@ func addEntityRelationshipFields(schema *formatdef.Schema, relName string, rel y
 		schema.Properties[idFieldName] = &formatdef.Schema{
 			Type:        "string",
 			Description: fmt.Sprintf("Polymorphic ID for %s", relName),
-			Nullable:    true,
+			Nullable:    isOptional,
 		}
 		schema.Properties[typeFieldName] = &formatdef.Schema{
 			Type:        "string",
 			Description: fmt.Sprintf("Polymorphic type for %s", relName),
-			Nullable:    true,
+			Nullable:    isOptional,
 		}
 		// Optionally add expanded union
 		if config.Relations.Expand && len(rel.For) > 0 {
@@ -195,7 +196,7 @@ func addEntityRelationshipFields(schema *formatdef.Schema, relName string, rel y
 			schema.Properties[objectFieldName] = &formatdef.Schema{
 				OneOf:       oneOfSchemas,
 				Description: fmt.Sprintf("Related %s object (polymorphic)", relName),
-				Nullable:    true,
+				Nullable:    isOptional,
 			}
 		}
 
@@ -209,12 +210,12 @@ func addEntityRelationshipFields(schema *formatdef.Schema, relName string, rel y
 			Items: &formatdef.Schema{
 				Type: "string",
 			},
-			Nullable: true,
+			Nullable: isOptional,
 		}
 		schema.Properties[typeFieldName] = &formatdef.Schema{
 			Type:        "string",
 			Description: fmt.Sprintf("Polymorphic type for %s", relName),
-			Nullable:    true,
+			Nullable:    isOptional,
 		}
 
 	case "HasOne", "HasMany", "HasOnePoly", "HasManyPoly":
@@ -230,7 +231,7 @@ func addEntityRelationshipFields(schema *formatdef.Schema, relName string, rel y
 				schema.Properties[objectFieldName] = &formatdef.Schema{
 					Ref:         "#/components/schemas/" + targetModel,
 					Description: fmt.Sprintf("Related %s object", targetModel),
-					Nullable:    true,
+					Nullable:    isOptional,
 				}
 			} else {
 				objectsFieldName := formatdef.ToCamelCase(relName) + "s"
@@ -238,7 +239,7 @@ func addEntityRelationshipFields(schema *formatdef.Schema, relName string, rel y
 					Type:        "array",
 					Description: fmt.Sprintf("Related %s objects", targetModel),
 					Items:       formatdef.SchemaRef(targetModel),
-					Nullable:    true,
+					Nullable:    isOptional,
 				}
 			}
 		}
@@ -311,7 +312,10 @@ func createEntityCreateSchema(reg *registry.Registry, entity yaml.Entity, model 
 				schema.Properties[idFieldName] = &formatdef.Schema{
 					Type:        "string",
 					Description: fmt.Sprintf("Foreign key to %s", relName),
-					Nullable:    true,
+					Nullable:    hasAttribute(rel.Attributes, "optional"),
+				}
+				if !hasAttribute(rel.Attributes, "optional") {
+					schema.Required = append(schema.Required, idFieldName)
 				}
 			} else if rel.Type == "ForMany" {
 				idsFieldName := formatdef.ToCamelCase(relName) + "IDs"
@@ -321,7 +325,7 @@ func createEntityCreateSchema(reg *registry.Registry, entity yaml.Entity, model 
 					Items: &formatdef.Schema{
 						Type: "string",
 					},
-					Nullable: true,
+					Nullable: hasAttribute(rel.Attributes, "optional"),
 				}
 			}
 		}
